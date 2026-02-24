@@ -41,10 +41,24 @@ export default function QueryProcessor(query: string): string {
     });
     return result !== undefined ? result.toString() : "none";
   }
-  
+
   const multiplyMatch = query.match(/what is (\d+) multiplied by (\d+)/i);
   if (multiplyMatch) {
     return (parseInt(multiplyMatch[1]) * parseInt(multiplyMatch[2])).toString();
+  }
+  // Handles "Which of the following numbers are primes: X, Y, Z?"
+  const primesMatch = query.match(/primes[:\s]+([\d,\s]+)/i);
+  if (primesMatch) {
+    const numbers = primesMatch[1].match(/\d+/g)?.map(Number) || [];
+    const isPrime = (n: number) => {
+      if (n < 2) return false;
+      for (let i = 2; i <= Math.sqrt(n); i++) {
+        if (n % i === 0) return false;
+      }
+      return true;
+    };
+    const primes = numbers.filter(isPrime);
+    return primes.length > 0 ? primes.join(", ") : "none";
   }
 
   return "";
