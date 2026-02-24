@@ -101,5 +101,31 @@ export default function QueryProcessor(query: string): string {
     return Math.pow(parseInt(powerMatch[1]), parseInt(powerMatch[2])).toString();
   }
 
+  // Handles "Which of the following is an anagram of X: a, b, c?"
+  const anagramMatch = query.match(/anagram of (\w+)[:\s]+([\w,\s]+)/i);
+  if (anagramMatch) {
+  const target = anagramMatch[1].toLowerCase().split("").sort().join("");
+  const words = anagramMatch[2].match(/\w+/g) || [];
+  const result = words.find(w => w.toLowerCase().split("").sort().join("") === target);
+  return result !== undefined ? result : "none";
+}
+
+// Handles "What is the scrabble score of X?"
+const scrabbleMatch = query.match(/scrabble score of (\w+)/i);
+if (scrabbleMatch) {
+  const scores: { [key: string]: number } = {
+    a: 1, e: 1, i: 1, o: 1, u: 1, l: 1, n: 1, s: 1, t: 1, r: 1,
+    d: 2, g: 2,
+    b: 3, c: 3, m: 3, p: 3,
+    f: 4, h: 4, v: 4, w: 4, y: 4,
+    k: 5,
+    j: 8, x: 8,
+    q: 10, z: 10
+  };
+  const word = scrabbleMatch[1].toLowerCase();
+  const score = word.split("").reduce((acc, letter) => acc + (scores[letter] || 0), 0);
+  return score.toString();
+}
+
   return "";
 }
