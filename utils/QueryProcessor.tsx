@@ -15,12 +15,13 @@ export default function QueryProcessor(query: string): string {
     return "akawaz";
   }
 
-  // Handles "What is X plus Y?"
-  const plusMatch = query.match(/what is (\d+) plus (\d+)/i);
-  if (plusMatch) {
-    const result = parseInt(plusMatch[1]) + parseInt(plusMatch[2]);
-    return result.toString();
-  }
+  // Handles "What is X plus Y plus Z plus ...?"
+  const plusMatch = query.match(/what is ([\d\s+plus]+)/i);
+  if (plusMatch && query.toLowerCase().includes("plus")) {
+  const numbers = plusMatch[1].match(/\d+/g)?.map(Number) || [];
+  const result = numbers.reduce((acc, n) => acc + n, 0);
+  return result.toString();
+}
 
   // Handles "Which of the following numbers is the largest: X, Y, Z?"
   const largestMatch = query.match(/largest[:\s]+([\d,\s]+)/i);
