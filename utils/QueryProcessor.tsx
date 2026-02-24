@@ -76,5 +76,11 @@ export default function QueryProcessor(query: string): string {
     return (numerator / denominator).toString();
   }
 
+  // Handles "What is X to the power of Y?"
+  const powerMatch = query.match(/what is (-?\d+) to the power of (-?\d+)/i);
+  if (powerMatch) {
+    return Math.pow(parseInt(powerMatch[1]), parseInt(powerMatch[2])).toString();
+  }
+
   return "";
 }
