@@ -66,5 +66,14 @@ export default function QueryProcessor(query: string): string {
     return (parseInt(minusMatch[1]) - parseInt(minusMatch[2])).toString();
   }
 
+  // Handles "What is X divided by Y?"
+  const divideMatch = query.match(/what is (-?\d+) divided by (-?\d+)/i);
+  if (divideMatch) {
+    const numerator = parseInt(divideMatch[1]);
+    const denominator = parseInt(divideMatch[2]);
+    if (denominator === 0) return "undefined";
+    return (numerator / denominator).toString();
+  }
+
   return "";
 }
