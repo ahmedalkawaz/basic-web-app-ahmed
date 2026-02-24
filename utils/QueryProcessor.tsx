@@ -60,6 +60,11 @@ export default function QueryProcessor(query: string): string {
     const primes = numbers.filter(isPrime);
     return primes.length > 0 ? primes.join(", ") : "none";
   }
+  // Handles "What is X minus Y?"
+  const minusMatch = query.match(/what is (-?\d+) minus (-?\d+)/i);
+  if (minusMatch) {
+    return (parseInt(minusMatch[1]) - parseInt(minusMatch[2])).toString();
+  }
 
   return "";
 }
