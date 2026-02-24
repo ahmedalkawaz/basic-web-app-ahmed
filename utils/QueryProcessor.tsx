@@ -82,5 +82,25 @@ export default function QueryProcessor(query: string): string {
     return Math.pow(parseInt(powerMatch[1]), parseInt(powerMatch[2])).toString();
   }
 
+  // Handles mixed operations with order of operations
+  const mathMatch = query.match(/what is ([\d\s+\-*xX]+(plus|minus|multiplied by|divided by|to the power of)[\d\s+\-*xX+plus\-minus multiplied divided power of]+)/i);
+  if (mathMatch) {
+  let expression = query
+    .replace(/what is /i, "")
+    .replace(/\?/, "")
+    .replace(/plus/gi, "+")
+    .replace(/minus/gi, "-")
+    .replace(/multiplied by/gi, "*")
+    .replace(/divided by/gi, "/")
+    .replace(/to the power of/gi, "**");
+  
+  try {
+    const result = Function(`"use strict"; return (${expression})`)();
+    return result.toString();
+  } catch {
+    return "invalid query";
+  }
+  }
+
   return "";
 }
