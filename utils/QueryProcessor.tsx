@@ -30,5 +30,17 @@ export default function QueryProcessor(query: string): string {
     return largest.toString();
   }
 
+    // Handles "Which of the following numbers is both a square and a cube: ..."
+  const squareCubeMatch = query.match(/square and a cube[:\s]+([\d,\s]+)/i);
+  if (squareCubeMatch) {
+    const numbers = squareCubeMatch[1].match(/\d+/g)?.map(Number) || [];
+    const result = numbers.find(n => {
+      const sqrt = Math.round(Math.sqrt(n));
+      const cbrt = Math.round(Math.cbrt(n));
+      return sqrt * sqrt === n && cbrt * cbrt * cbrt === n;
+    });
+    return result !== undefined ? result.toString() : "none";
+  }
+
   return "";
 }
