@@ -15,6 +15,25 @@ export default function QueryProcessor(query: string): string {
     return "akawaz";
   }
 
+  const expressionMatch = query.match(/what is [\d\s]+(plus|minus|multiplied by|divided by|to the power of)/i);
+  if (expressionMatch) {
+    let expression = query
+      .replace(/what is /i, "")
+      .replace(/\?/, "")
+      .replace(/multiplied by/gi, "*")
+      .replace(/divided by/gi, "/")
+      .replace(/to the power of/gi, "**")
+      .replace(/plus/gi, "+")
+      .replace(/minus/gi, "-");
+
+    try {
+      const result = Function(`"use strict"; return (${expression})`)();
+      return result.toString();
+    } catch {
+      return "invalid query";
+    }
+  }
+
   // Handles "What is X plus Y plus Z plus ...?"
   const plusMatch = query.match(/what is ([\d\s+plus]+)/i);
   if (plusMatch && query.toLowerCase().includes("plus")) {
@@ -80,26 +99,6 @@ export default function QueryProcessor(query: string): string {
   const powerMatch = query.match(/what is (-?\d+) to the power of (-?\d+)/i);
   if (powerMatch) {
     return Math.pow(parseInt(powerMatch[1]), parseInt(powerMatch[2])).toString();
-  }
-
-  // Handles mixed operations with order of operations
-  const mathMatch = query.match(/what is ([\d\s+\-*xX]+(plus|minus|multiplied by|divided by|to the power of)[\d\s+\-*xX+plus\-minus multiplied divided power of]+)/i);
-  if (mathMatch) {
-  let expression = query
-    .replace(/what is /i, "")
-    .replace(/\?/, "")
-    .replace(/plus/gi, "+")
-    .replace(/minus/gi, "-")
-    .replace(/multiplied by/gi, "*")
-    .replace(/divided by/gi, "/")
-    .replace(/to the power of/gi, "**");
-  
-  try {
-    const result = Function(`"use strict"; return (${expression})`)();
-    return result.toString();
-  } catch {
-    return "invalid query";
-  }
   }
 
   return "";
