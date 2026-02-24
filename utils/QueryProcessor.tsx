@@ -11,8 +11,23 @@ export default function QueryProcessor(query: string): string {
     return "Ahmed";
   }
 
-  if (query.toLowerCase().includes("andrew id")){
-    return "akawaz"
+  if (query.toLowerCase().includes("andrew id")) {
+    return "akawaz";
+  }
+
+  // Handles "What is X plus Y?"
+  const plusMatch = query.match(/what is (\d+) plus (\d+)/i);
+  if (plusMatch) {
+    const result = parseInt(plusMatch[1]) + parseInt(plusMatch[2]);
+    return result.toString();
+  }
+
+  // Handles "Which of the following numbers is the largest: X, Y, Z?"
+  const largestMatch = query.match(/largest[:\s]+([\d,\s]+)/i);
+  if (largestMatch) {
+    const numbers = largestMatch[1].match(/\d+/g)?.map(Number) || [];
+    const largest = Math.max(...numbers);
+    return largest.toString();
   }
 
   return "";
