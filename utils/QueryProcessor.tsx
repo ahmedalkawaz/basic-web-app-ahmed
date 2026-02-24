@@ -41,6 +41,11 @@ export default function QueryProcessor(query: string): string {
     });
     return result !== undefined ? result.toString() : "none";
   }
+  
+  const multiplyMatch = query.match(/what is (\d+) multiplied by (\d+)/i);
+  if (multiplyMatch) {
+    return (parseInt(multiplyMatch[1]) * parseInt(multiplyMatch[2])).toString();
+  }
 
   return "";
 }
